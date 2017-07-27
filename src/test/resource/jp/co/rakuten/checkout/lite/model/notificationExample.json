@@ -1,0 +1,25 @@
+{
+	"object": "list",
+	"url": "/v1/notifications",
+	"total": 2,
+	"data": [
+		{
+			"object": "notification",
+			"id": "ntfn_82d8fc8531934446bda3e7c835f79c3a",
+			"charge": "1250000255-20150623-0000168715",
+			"type": "notification.mail",
+			"subject": "mail subject",
+			"body": "mail body",
+			"created": 1456116957
+		},
+		{
+			"object": "notification",
+			"id": "ntfn_82d8fc8531934446bda3e7c835f79c3b",
+			"charge": "1250000255-20150623-0000168715",
+			"type": "notification.mail",
+			"subject": "mail subject 1",
+			"body": "mail body 1",
+			"created": 1456116958
+		}
+	]
+}

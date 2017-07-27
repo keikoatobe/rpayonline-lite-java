@@ -1,0 +1,105 @@
+/*
+  Upload settings for Bintray jcenter
+*/
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.7"
+}
+
+group = 'jp.co.rakuten.checkout.lite'
+version = '1.0.0'
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: "jacoco"
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId 'jp.co.rakuten.checkout.lite'
+            artifactId 'rpayonline-lite-java'
+            version '1.0.0'
+        }
+    }
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+        key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+        publications = ['MyPublication']
+        pkg {
+                repo = 'rpayonline'
+                name = 'rpayonline-lite-java'
+                userOrg = 'rpayonline'
+                licenses = ['MIT']
+                vcsUrl = 'https://github.com/rpayonline/rpayonline-lite-java.git'
+                labels = ['rpay']
+                publicDownloadNumbers = true
+                version {
+                    name = '1.0.0'
+                        desc = 'Rpay Online LITE Java bindings'
+                        vcsTag = '1.0.0'
+                }
+        }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
+
+/*
+  Build settings
+*/
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'org.slf4j:slf4j-simple:1.7.21'
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.7'
+    testCompile 'junit:junit:4.12'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
+    testCompile "com.github.tomakehurst:wiremock-standalone:2.6.0"
+}
+
+jar {
+  doFirst {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  }
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+  from {
+    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/coverage"
+    }
+}
+
+sourceSets {
+  main {
+    resources.srcDir "src/test/resource"
+  }
+}

@@ -1,0 +1,43 @@
+{
+	"object": "charge",
+	"open_id": "https://myid.rakuten.co.jp/openid/user/h65MxxxxxxxQxn0wJENoHHsalseDD==",
+	"id": "1250000255-20150623-0000168715",
+	"cipher": "7d2558bba9a49d22a4788dca9395c21289b953571a92388891da8bb6b210a12d",
+	"livemode": false,
+	"currency": "jpy",
+	"amount": 5000,
+	"point": 1000,
+	"cart_id": "cart_id1",
+	"paid": false,
+	"captured": false,
+	"status": "succeeded",
+	"refunded": true,
+	"items": [
+		{
+			"id": "item_id1",
+			"name": "good1",
+			"quantity": 10,
+			"unit_price": 100
+		},
+		{
+			"id": "item_id2",
+			"name": "good2",
+			"quantity": 20,
+			"unit_price": 200
+		}
+	],
+	"address": {
+		"country": "JP",
+		"first_name": "tairou",
+		"first_name_kana": "tairou",
+		"last_name": "rakuten",
+		"last_name_kana": "rakuten",
+		"address_zip": "158-0094",
+		"address_state": "Tokyo",
+		"address_city": "setagayaku",
+		"address_line": "tamagawa1-14-1",
+		"tel": "010-0123-4567"
+	},
+	"created": 1433862000,
+	"updated": 1433948400
+}

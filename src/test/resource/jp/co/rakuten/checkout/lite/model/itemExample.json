@@ -1,0 +1,16 @@
+{
+  "items": [
+	    {
+			"id": "item_id1",
+			"name": "商品名１",
+			"quantity": 10,
+			"unit_price": 100
+		},
+		{
+			"id": "item_id2",
+			"name": "商品名２",
+			"quantity": 20,
+			"unit_price": 200
+		}
+	]
+}

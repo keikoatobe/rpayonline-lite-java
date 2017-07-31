@@ -41,6 +41,23 @@ public final class Webhook {
     }
 
     /**
+     * Construct event object from JSON payload
+     * 
+     * @param payload
+     *            JSON string
+     * @param sigHeader
+     *            signature header sent by Rakuten
+     * @return Event object if signature header is verified
+     * @throws SignatureVerificationException
+     *             if signature header does not match with pre-stored webhook signature
+     * @throws UnexpectedValueException
+     *             if JSON payload format is not valid
+     */
+    public static Event constructEvent(String payload, String sigHeader) throws SignatureVerificationException, UnexpectedValueException {
+        return constructEvent(payload, sigHeader, null);
+    }
+
+    /**
      * This class contains method for verifying signature header.
      * 
      * @author rpayonline

@@ -1,27 +1,51 @@
 Java bindings for Rpay Online LITE
 ===================================
+[![Build Status](https://travis-ci.org/rpayonline/rpayonline-lite-java.svg?branch=master)](https://travis-ci.org/rpayonline/rpayonline-lite-java)
+[![Coverage Status](https://coveralls.io/repos/github/rpayonline/rpayonline-lite-java/badge.svg?branch=master)](https://coveralls.io/github/rpayonline/rpayonline-lite-java?branch=master)
 
 [楽天ペイ（オンライン決済 LITE版）のAPI](https://lite.checkout.rakuten.co.jp/manual)をJavaで利用するためのSDKです。
 
 動作環境
 ----------------------------------
-Java 8 以上
+Java 8
 
 インストール
 ----------------------------------
 
 Gradle
 ----------------------------------
-TBD
+build.gradleに以下のように設定を追加して下さい。
+
+```groovy
+repositories {
+    jcenter()
+    maven {
+        url "https://rpayonline.bintray.com/rpayonline"
+    }
+}
+
+dependencies {
+    implementation 'jp.co.rakuten.checkout.lite:rpayonline-lite-java:1.0.0'
+}
+
+```
 
 Maven
 ----------------------------------
-TBD
+pom.xmlに下記のように設定を追加して下さい。
+
+```xml
+<dependency>
+    <groupId>jp.co.rakuten.checkout.lite</groupId>
+    <artifactId>rpayonline-lite-java</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 使い方
 ==================================
 
-お支払いボタンの作成方法
+お支払いボタンの作成方法 
 -----------------------------------
 
 ```java
@@ -49,7 +73,7 @@ public static void main(String args[]) {
 
 結果例
 
-```
+```html
 <script 
     src="https://lite.checkout.rakuten.co.jp/s/js/checkout-lite-v1.js" 
     class="checkout-lite-button" 
@@ -76,10 +100,7 @@ public static void main(String args[]) {
         Rlite.setApiKey("***");
         // 注文番号を指定してChargeオブジェクトを取得
         Charge ch = Charge.retrieve("1250000255-20150623-0000168715");
-        System.out.println("ID:" + ch.getId() + "\n"
-                       + "Amount:" + ch.getAmount() + "\n"
-                       + "Point:" + ch.getPoint()
-                       );
+        System.out.println(ch);
     } catch (RpayLiteException e) {
         e.printStackTrace();
     }
@@ -88,10 +109,50 @@ public static void main(String args[]) {
 
 結果例
 
-```
-ID:1250000255-20150623-0000168715
-Amount:5000
-Point:1000
+```json
+<jp.co.rakuten.checkout.lite.model.Charge@*** id=1250000255-20150623-0000168715> JSON: {
+  "object": "charge",
+  "open_id": "https://myid.rakuten.co.jp/openid/user/h65MxxxxxxxQxn0wJENoHHsalseDD==", 
+  "id": "1250000255-20150623-0000168715",
+  "cipher": "7d2558bba9a49d22a4788dca9395c21289b953571a92388891da8bb6b210a12d",
+  "livemode": false,
+  "currency": "jpy",
+  "amount": 5000,
+  "point": 1000,
+  "cart_id": "cart_id1",
+  "paid": true,
+  "captured": true,
+  "status": "succeeded",
+  "refunded": false,
+  "items": [
+    {
+      "id": "item_id1",
+      "name": "商品名",
+      "quantity": 10,
+      "unit_price": 100
+    },
+    {
+      "id": "item_id2",
+      "name": "商品名",
+      "quantity": 20,
+      "unit_price": 200
+    }
+  ],
+  "address": {
+    "country": "JP",
+    "first_name": "太郎",
+    "first_name_kana": "タロウ",
+    "last_name": "楽天",
+    "last_name_kana": "ラクテン",
+    "address_zip": "158-0094",
+    "address_state": "東京都",
+    "address_city": "世田谷区",
+    "address_line": "玉川1-14-1",
+    "tel": "000-0000-0000"
+  },
+  "created": 1433862000,
+  "updated": 1433948400
+}
 ```
 
 ### 決済の確定
@@ -259,10 +320,7 @@ public static void main(String args[]) {
         params.put("body", "商品を発送しました。\\n#CUSTOMER_NAME# 様のまたのご利用をお待ちしております。");
         // メールを送信する
         Notification n = Notification.send(params);
-        System.out.println("ID:" + n.getCharge() + "\n"
-                       + "Subject:" + n.getSubject() + "\n"
-                       + "Body:" + n.getBody()
-                       );
+        System.out.println(n);
     } catch (RpayLiteException e) {
         e.printStackTrace();
     }
@@ -271,10 +329,16 @@ public static void main(String args[]) {
 
 結果例
 
-```
-ID:1250000255-20150623-0000168715
-Subject:件名
-Body:商品を発送しました。\n#CUSTOMER_NAME# 様のまたのご利用をお待ちしております。
+```json
+<jp.co.rakuten.checkout.lite.model.Notification@*** id=ntfn_77cc7ad01dee4772a2f4ed4c9778da89> JSON: {
+  "object": "notification",
+  "id": "ntfn_77cc7ad01dee4772a2f4ed4c9778da89",
+  "charge": "1250000255-20150623-0000168715",
+  "type": "notification.mail",
+  "subject": "件名",
+  "body": "商品を発送しました。\\n#CUSTOMER_NAME# 様のまたのご利用をお待ちしております。",
+  "created": 1456126606
+}
 ```
 
 ### メール送信済み情報の取得
@@ -309,9 +373,9 @@ Body:商品を発送しました。\n#CUSTOMER_NAME# 様のまたのご利用を
 ```java
 public static void main(String args[]) {
     try{
-　　　　　　　// 秘密鍵を設定
+　　　　 // 秘密鍵を設定
         Rlite.setApiKey("***");
-　　　　　　　// Charge オブジェクトのIDに紐づく全てのメールの情報を取得
+　　　　 // Charge オブジェクトのIDに紐づく全てのメールの情報を取得
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("charge", "1250000255-20150623-0000168715");
         NotificationCollection nc = Notification.list(params);
@@ -354,7 +418,7 @@ String payload = "{\"object\":\"event\", \"id\":\"evt_xxxxxxxxx\", \"type\":\"ch
 // Event オブジェクトを生成
 Event ev = Webhook.constructEvent(payload, sigHeader, Rlite.getWebhookSignature());
 //OR
-Event ev = Webhook.constructEvent(payload, SigHeader, null);
+Event ev = Webhook.constructEvent(payload, SigHeader);
 ```
 
 Proxy Connection

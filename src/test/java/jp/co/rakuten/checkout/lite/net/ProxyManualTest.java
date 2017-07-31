@@ -44,7 +44,7 @@ public class ProxyManualTest extends RpayLiteTest {
             InvalidApiKeyException {
         RpayLite.setApiKey(TEST_KEY);
         RpayLite.setProxyCredential(new PasswordAuthentication("foo", "bar".toCharArray()));
-        RpayLite.setConnectionProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.99.100", 3128)));
+        RpayLite.setConnectionProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 3128)));
         Charge.retrieve(TEST_ID_NORMAL);
     }
 
@@ -54,7 +54,7 @@ public class ProxyManualTest extends RpayLiteTest {
             InvalidApiKeyException {
         RpayLite.setApiKey(TEST_KEY);
         String basic = String.format("Basic %s", DatatypeConverter.printBase64Binary((RpayLite.getApiKey() + ":").getBytes()));        
-        RpayLite.setConnectionProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.99.100", 3128)));
+        RpayLite.setConnectionProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 3128)));
         RpayLite.setProxyCredential(new PasswordAuthentication("foo", "bar".toCharArray())); 
         String url = RpayLite.getApiBase() + "/charges?id=1800005627-20170623-0000003160";
         //String url = "http://exmaple.com";    

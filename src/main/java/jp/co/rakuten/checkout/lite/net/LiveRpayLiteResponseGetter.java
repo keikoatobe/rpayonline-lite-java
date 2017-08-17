@@ -6,13 +6,13 @@ import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
-import javax.xml.bind.DatatypeConverter;
 
 import jp.co.rakuten.checkout.lite.RpayLite;
 import jp.co.rakuten.checkout.lite.exception.APIConnectionException;
@@ -122,7 +122,7 @@ public class LiveRpayLiteResponseGetter implements RpayLiteResponseGetter {
         String rBody = response.getResponseBody();
 
         if (rCode < 200 || rCode >= 300) {
-            //rCode refers to HTTP response status code. In case response code is not 2xx, error will be handled
+            // rCode refers to HTTP response status code. In case response code is not 2xx, error will be handled
             handleAPIError(rBody, rCode);
         }
         return rBody;
@@ -153,7 +153,7 @@ public class LiveRpayLiteResponseGetter implements RpayLiteResponseGetter {
     private static RpayLiteResponse getRpayLiteResponse(String url_string, RequestOptions options, Map<String, Object> params, RequestMethod method)
             throws APIConnectionException, InvalidRequestException, AuthenticationException, PaymentRequestException, APIException,
             PermissionException, RateLimitException {
-            HttpURLConnection connection = null;
+        HttpURLConnection connection = null;
         try {
             URL url = new URL(url_string);
             if (method == null) {
@@ -181,7 +181,7 @@ public class LiveRpayLiteResponseGetter implements RpayLiteResponseGetter {
                 rBody = getResponseBody(connection.getErrorStream());
             }
             headers = connection.getHeaderFields();
-            
+
             return new RpayLiteResponse(rCode, rBody, headers);
 
         } catch (IOException e) {
@@ -190,7 +190,7 @@ public class LiveRpayLiteResponseGetter implements RpayLiteResponseGetter {
                             + "Please check your internet connection and try again. If this problem persists,"
                             + "you should check Rpay Lite's service status," + " or let us know at https://checkout.faq.rakuten.ne.jp.",
                     RpayLite.getApiBase(), e.getMessage()), e);
-        }finally {
+        } finally {
             if (connection != null) {
                 connection.disconnect();
             }
@@ -208,7 +208,7 @@ public class LiveRpayLiteResponseGetter implements RpayLiteResponseGetter {
      * @throws IOException
      */
     private static HttpURLConnection createRpayLiteConnection(URL url, RequestOptions options) throws IOException {
-        String basic = String.format("Basic %s", DatatypeConverter.printBase64Binary((options.getApiKey() + ":").getBytes()));
+        String basic = String.format("Basic %s", Base64.getEncoder().encodeToString((RpayLite.getApiKey() + ":").getBytes(APIResource.CHARSET)));
         HttpURLConnection connection;
         if (RpayLite.getConnectionProxy() != null) {
             connection = (HttpURLConnection) url.openConnection(RpayLite.getConnectionProxy());
@@ -222,7 +222,6 @@ public class LiveRpayLiteResponseGetter implements RpayLiteResponseGetter {
             connection = (HttpURLConnection) url.openConnection();
         }
 
-        
         connection.setDoOutput(true);
         connection.setRequestProperty("Authorization", basic);
         connection.setRequestProperty("User-Agent", String.format("%s/%s", RpayLite.PRODUCT_NAME, RpayLite.VERSION));

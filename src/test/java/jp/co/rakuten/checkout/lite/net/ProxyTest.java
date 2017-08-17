@@ -13,15 +13,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
-import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.URL;
 
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -42,11 +39,9 @@ import jp.co.rakuten.checkout.lite.exception.PaymentRequestException;
 import jp.co.rakuten.checkout.lite.exception.PermissionException;
 import jp.co.rakuten.checkout.lite.exception.RateLimitException;
 import jp.co.rakuten.checkout.lite.exception.ServiceException;
-import jp.co.rakuten.checkout.lite.model.Charge;
 import jp.co.rakuten.checkout.lite.net.APIResource.RequestMethod;
 import jp.co.rakuten.checkout.lite.net.APIResource.RequestType;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 

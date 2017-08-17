@@ -3,12 +3,11 @@ package jp.co.rakuten.checkout.lite.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.security.GeneralSecurityException;
-
 import org.junit.Test;
 
 import jp.co.rakuten.checkout.lite.RpayLiteTest;
 import jp.co.rakuten.checkout.lite.exception.APIException;
+import jp.co.rakuten.checkout.lite.exception.InvalidApiKeyException;
 import jp.co.rakuten.checkout.lite.model.Button.ImageId;
 
 public class ButtonTest extends RpayLiteTest {
@@ -63,8 +62,8 @@ public class ButtonTest extends RpayLiteTest {
     }
 
     @Test
-    public void testBuild() throws APIException, GeneralSecurityException {
-        Button b = new Button();
+    public void testBuild() throws APIException, InvalidApiKeyException {
+        Button b = new Button(); 
         b.setPublicKey(TEST_PUBLIC);
         b.addItem("item-01", "item-name", 1122, 3);
         b.setCartId("cart-id-1");
@@ -77,7 +76,7 @@ public class ButtonTest extends RpayLiteTest {
     }
 
     @Test
-    public void testBuildNoSig() throws APIException, GeneralSecurityException {
+    public void testBuildNoSig() throws APIException, InvalidApiKeyException{
         Button b = new Button();
         b.setPublicKey(TEST_PUBLIC);
         b.addItem("item-01", "item_name", 1122, 3);
@@ -90,7 +89,7 @@ public class ButtonTest extends RpayLiteTest {
     }
 
     @Test
-    public void testBuildNoCart() throws APIException, GeneralSecurityException {
+    public void testBuildNoCart() throws APIException, InvalidApiKeyException {
         Button b = new Button();
         b.setPublicKey(TEST_PUBLIC);
         b.addItem("item-01", "item_name", 1122, 3);
@@ -102,7 +101,7 @@ public class ButtonTest extends RpayLiteTest {
     }
 
     @Test(expected = APIException.class)
-    public void testEmptyKey() throws APIException, GeneralSecurityException {
+    public void testEmptyKey() throws APIException, InvalidApiKeyException {
         Button b = new Button();
         b.setPublicKey("");
         b.setImage(ImageId._2);
@@ -110,14 +109,14 @@ public class ButtonTest extends RpayLiteTest {
     }
 
     @Test(expected = APIException.class)
-    public void testNullKey() throws APIException, GeneralSecurityException {
+    public void testNullKey() throws APIException, InvalidApiKeyException {
         Button b = new Button();
         b.setImage(ImageId._0);
         b.build();
     }
 
     @Test(expected = APIException.class)
-    public void testEmptyItem() throws APIException, GeneralSecurityException {
+    public void testEmptyItem() throws APIException, InvalidApiKeyException {
         Button b = new Button();
         b.setPublicKey("public_key");
         b.setImage(ImageId._1);

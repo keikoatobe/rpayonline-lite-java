@@ -1,6 +1,7 @@
 package jp.co.rakuten.checkout.lite.model;
 
-import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Formatter;
 
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import jp.co.rakuten.checkout.lite.RpayLite;
 import jp.co.rakuten.checkout.lite.exception.APIException;
+import jp.co.rakuten.checkout.lite.exception.InvalidApiKeyException;
 
 /**
  * This class is used for building the HTML code for generating the Rpay Lite button. By inputing necessary information and calling build() method,
@@ -86,10 +88,10 @@ public class Button extends RpayLiteObject {
         items.add(item);
     }
 
-    public void addItem(Item item){
+    public void addItem(Item item) {
         items.add(item);
     }
-    
+
     public ArrayList<Item> getItems() {
         return items;
     }
@@ -158,9 +160,10 @@ public class Button extends RpayLiteObject {
      * @return html code for creating button
      * @throws APIException
      *             if public key is empty/null or item is empty
-     * @throws GeneralSecurityException
+     * @throws InvalidApiKeyException
+     *             if private key is empty or null
      */
-    public String build() throws APIException, GeneralSecurityException {
+    public String build() throws APIException, InvalidApiKeyException {
         StringBuilder html = new StringBuilder("<script");
         html.append(" src=\"" + SRC + "\"");
         html.append(" class=\"" + CLASS + "\"");
@@ -201,9 +204,9 @@ public class Button extends RpayLiteObject {
      * 
      * @return signature
      * @throws APIException
-     * @throws GeneralSecurityException
+     * @throws InvalidApiKeyException
      */
-    private String buildSig() throws APIException, GeneralSecurityException {
+    private String buildSig() throws APIException, InvalidApiKeyException {
         if (StringUtils.isEmpty(publicKey)) {
             throw new APIException(null, "Public key is empty.", null);
         }
@@ -222,10 +225,19 @@ public class Button extends RpayLiteObject {
         }
 
         String key = RpayLite.getApiKey();
-
+        if (StringUtils.isEmpty(key)) {
+            throw new InvalidApiKeyException(null, "Secret key is empty.");
+        }
         SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), "HmacSHA1");
-        Mac mac = Mac.getInstance("HmacSHA1");
-        mac.init(signingKey);
+        Mac mac = null;
+        try {
+            mac = Mac.getInstance("HmacSHA1");
+            mac.init(signingKey);
+        } catch (NoSuchAlgorithmException e) {
+            // This should not happen
+        } catch (InvalidKeyException e) {
+            // This should not happen
+        }
         return toHexString(mac.doFinal(data.toString().getBytes()));
     }
 

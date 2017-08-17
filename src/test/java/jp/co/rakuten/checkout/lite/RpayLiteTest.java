@@ -62,6 +62,11 @@ public class RpayLiteTest {
         RpayLite.setApiKey("some_key");
     }
     
+    @Test(expected = InvalidApiKeyException.class)
+    public void testSetNullKey() throws InvalidApiKeyException{
+        RpayLite.setApiKey(null);
+    }
+    
     @Test
     public void testWebhookSignature(){
         RpayLite.setWebhookSignature("some_signature");

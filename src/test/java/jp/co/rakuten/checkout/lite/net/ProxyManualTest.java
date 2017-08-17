@@ -10,13 +10,13 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.Base64;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
-import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
 
 import jp.co.rakuten.checkout.lite.RpayLite;
 import jp.co.rakuten.checkout.lite.RpayLiteTest;
@@ -37,7 +37,7 @@ import jp.co.rakuten.checkout.lite.model.Charge;
 public class ProxyManualTest extends RpayLiteTest {
 
     private static final SSLSocketFactory socketFactory = new RpayLiteSSLSocketFactory();
-    
+
     @Test
     public void getViaProxyWithAuth() throws AuthenticationException, InvalidRequestException, APIConnectionException, PaymentRequestException,
             APIException, PermissionException, RateLimitException, MethodNotAllowedException, InternalServerException, ServiceException, IOException,
@@ -53,13 +53,13 @@ public class ProxyManualTest extends RpayLiteTest {
             APIException, PermissionException, RateLimitException, MethodNotAllowedException, InternalServerException, ServiceException, IOException,
             InvalidApiKeyException {
         RpayLite.setApiKey(TEST_KEY);
-        String basic = String.format("Basic %s", DatatypeConverter.printBase64Binary((RpayLite.getApiKey() + ":").getBytes()));        
+        String basic = String.format("Basic %s", Base64.getEncoder().encodeToString((RpayLite.getApiKey() + ":").getBytes(APIResource.CHARSET)));
         RpayLite.setConnectionProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 3128)));
-        RpayLite.setProxyCredential(new PasswordAuthentication("foo", "bar".toCharArray())); 
+        RpayLite.setProxyCredential(new PasswordAuthentication("foo", "bar".toCharArray()));
         String url = RpayLite.getApiBase() + "/charges?id=1800005627-20170623-0000003160";
-        //String url = "http://exmaple.com";    
+        // String url = "http://exmaple.com";
         URL rpayLiteURL = new URL(url);
-        
+
         HttpURLConnection connection;
         if (RpayLite.getConnectionProxy() != null) {
             connection = (HttpURLConnection) rpayLiteURL.openConnection(RpayLite.getConnectionProxy());
@@ -70,18 +70,18 @@ public class ProxyManualTest extends RpayLiteTest {
                 }
             });
             if (connection instanceof HttpsURLConnection) {
-            ((HttpsURLConnection) connection).setSSLSocketFactory(socketFactory);
-        }
+                ((HttpsURLConnection) connection).setSSLSocketFactory(socketFactory);
+            }
         } else {
             connection = (HttpURLConnection) rpayLiteURL.openConnection();
             if (connection instanceof HttpsURLConnection) {
                 ((HttpsURLConnection) connection).setSSLSocketFactory(socketFactory);
             }
-        } 
+        }
         connection.setDoOutput(true);
         connection.setRequestProperty("Authorization", basic);
         connection.setUseCaches(false);
-        connection.setRequestMethod("GET");       
+        connection.setRequestMethod("GET");
         connection.connect();
         System.out.println(connection.usingProxy());
         InputStream response = connection.getInputStream();

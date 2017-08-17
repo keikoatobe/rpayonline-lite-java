@@ -3,6 +3,8 @@ package jp.co.rakuten.checkout.lite;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 
+import org.apache.commons.lang3.StringUtils;
+
 import jp.co.rakuten.checkout.lite.exception.InvalidApiKeyException;
 
 /**
@@ -52,6 +54,9 @@ public abstract class RpayLite {
      *             if private key is not following the specification
      */
     public static void setApiKey(String key) throws InvalidApiKeyException {
+        if(StringUtils.isEmpty(key)){
+            throw new InvalidApiKeyException(null, "Secret key is empty.");
+        }
         if (key.startsWith("live_private_") || key.startsWith("test_private_")) {
             isSandbox = false;
             apiBase = API_ENDPOINT + LIVE_API_BASE;

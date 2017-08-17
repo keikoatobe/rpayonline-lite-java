@@ -1,4 +1,4 @@
-Java bindings for Rpay Online LITE
+Java bindings for Rakuten Pay Online LITE
 ===================================
 [![Build Status](https://travis-ci.org/rpayonline/rpayonline-lite-java.svg?branch=master)](https://travis-ci.org/rpayonline/rpayonline-lite-java)
 [![Coverage Status](https://coveralls.io/repos/github/rpayonline/rpayonline-lite-java/badge.svg?branch=master)](https://coveralls.io/github/rpayonline/rpayonline-lite-java?branch=master)
@@ -35,11 +35,20 @@ Maven
 pom.xmlに下記のように設定を追加して下さい。
 
 ```xml
-<dependency>
-    <groupId>jp.co.rakuten.checkout.lite</groupId>
-    <artifactId>rpayonline-lite-java</artifactId>
-    <version>1.0.0</version>
-</dependency>
+<repositories>
+    <repository>
+        <id>rpayonline</id>
+        <url>https://rpayonline.bintray.com/rpayonline</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>jp.co.rakuten.checkout.lite</groupId>
+        <artifactId>rpayonline-lite-java</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
 ```
 
 使い方
@@ -51,6 +60,8 @@ pom.xmlに下記のように設定を追加して下さい。
 ```java
 public static void main(String args[]) {
     try{
+        // 秘密鍵を設定
+        RpayLite.setApiKey("***");
         // お支払ボタンのオブジェクトを作成
         Button b = new Button();
         // 公開鍵を設定
@@ -97,7 +108,7 @@ Charge objects
 public static void main(String args[]) {
     try{
         // 秘密鍵を設定
-        Rlite.setApiKey("***");
+        RpayLite.setApiKey("***");
         // 注文番号を指定してChargeオブジェクトを取得
         Charge ch = Charge.retrieve("1250000255-20150623-0000168715");
         System.out.println(ch);
@@ -161,7 +172,7 @@ public static void main(String args[]) {
 public static void main(String args[]) {
     try {
         // 秘密鍵を設定
-        Rlite.setApiKey("***");
+        RpayLite.setApiKey("***");
         // 注文番号を指定してChargeオブジェクトを取得
         Charge ch = Charge.retrieve("1250000255-20150623-0000168715");
         System.out.println("ID:" + ch.getId() + "\n"
@@ -197,7 +208,7 @@ Captured:true
 public static void main(String args[]) {
     try{
         // 秘密鍵を設定
-        Rltie.setApiKey("***");
+        RpayLite.setApiKey("***");
         // 注文番号を指定してChargeオブジェクトを取得
         Charge ch = Charge.retrieve("1250000255-20150623-0000168715");
         System.out.println("ID:" + ch.getId() + "\n"
@@ -233,7 +244,7 @@ Refunded:true
 public static void main(String args[]) {
     try{
         // 秘密鍵を設定
-        Rltie.setApiKey("***");
+        RpayLite.setApiKey("***");
         // 注文番号を指定してChargeオブジェクトを取得
         Charge ch = Charge.retrieve("1250000255-20150623-0000168715");
         System.out.println("ID:" + ch.getId() + "\n"
@@ -275,7 +286,7 @@ list関数を呼ぶことで、APIにアクセスすることができる。
 public static void main(String args[]) {
     try{
         // 秘密鍵を設定
-        Rlite.setApiKey("***");
+        RpayLite.setApiKey("***");
         Map<String, Object> chargeParams = new HashMap<String, Object>();
         chargeParams.put("limit",3);
         // Chargeオブジェクトのリストを取得
@@ -312,7 +323,7 @@ Notification objects
 public static void main(String args[]) {
     try{
         // 秘密鍵を設定
-        Rlite.setApiKey("***");
+        RpayLite.setApiKey("***");
         Map<String, Object> params = new HashMap<String, Object>();
         // メールのCharge番号を指定して内容を入力
         params.put("charge", "1250000255-20150623-0000168715");
@@ -347,14 +358,12 @@ public static void main(String args[]) {
 public static void main(String args[]) {
     try{
         // 秘密鍵を設定
-        Rlite.setApiKey("***");
+        RpayLite.setApiKey("***");
         // Charge オブジェクトのIDに紐づく、特定のIDを持ったメールの情報を取得。
         Notification n = Notification.retrieve("1250000255-20150623-0000168715", "ntfn_77cc7ad01dee4772a2f4ed4c9778da89");
-        for (Notification n : nc.getData()) {
-            System.out.println("Charge:" + n.getCharge() + "\n"
-                           + Subject:" + n.getSubject() + "\n"
-                           + Body:" + n.getBody());
-        }
+        System.out.println("Charge:" + n.getCharge() + "\n"
+                       + "Subject:" + n.getSubject() + "\n"
+                       + "Body:" + n.getBody());
     } catch (RpayLiteException e) {
         e.printStackTrace();
     }
@@ -363,7 +372,7 @@ public static void main(String args[]) {
 結果例
 
 ```
-ID:1250000255-20150623-0000168715
+Charge:1250000255-20150623-0000168715
 Subject:件名
 Body:商品を発送しました。\n#CUSTOMER_NAME# 様のまたのご利用をお待ちしております。
 ```
@@ -373,16 +382,16 @@ Body:商品を発送しました。\n#CUSTOMER_NAME# 様のまたのご利用を
 ```java
 public static void main(String args[]) {
     try{
-　　　　 // 秘密鍵を設定
-        Rlite.setApiKey("***");
-　　　　 // Charge オブジェクトのIDに紐づく全てのメールの情報を取得
+        // 秘密鍵を設定
+        RpayLite.setApiKey("***");
+        // Charge オブジェクトのIDに紐づく全てのメールの情報を取得
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("charge", "1250000255-20150623-0000168715");
         NotificationCollection nc = Notification.list(params);
         for (Notification n : nc.getData()) {
             System.out.println("Charge:" + n.getCharge() + "\n"
-                           + Subject:" + n.getSubject() + "\n"
-                           + Body:" + n.getBody());
+                           + "Subject:" + n.getSubject() + "\n"
+                           + "Body:" + n.getBody());
         }
     } catch (RpayLiteException e) {
         e.printStackTrace();
@@ -392,13 +401,13 @@ public static void main(String args[]) {
 結果例
 
 ```
-ID:1250000255-20150623-0000168715
+Charge:1250000255-20150623-0000168715
 Subject:通知件名3
 Body:通知本文3
-ID:1250000255-20150623-0000168715
+Charge:1250000255-20150623-0000168715
 Subject:通知件名2
 Body:通知本文2
-ID:1250000255-20150623-0000168715
+Charge:1250000255-20150623-0000168715
 Subject:通知件名1
 Body:通知本文1
 ```
@@ -408,15 +417,15 @@ Webhook
 
 ```java
 // 事前にDashboardより、WebhookのSignatureを入手し、設定して下さい。
-Rlite.setWebhookSignature("webhook_xxxxxxxxxx");
+RpayLite.setWebhookSignature("webhook_xxxxxxxxxx");
  
 // Httpサーバで、Webhookのリクエストヘッダを受け取って下さい。
-String sigHeader = headers.get(Rlite.SIGNATURE_HEADER);
+String sigHeader = headers.get(RpayLite.SIGNATURE_HEADER);
 // Httpサーバで、WebhookのリクエストボディをJSON形式で受け取って下さい
 String payload = "{\"object\":\"event\", \"id\":\"evt_xxxxxxxxx\", \"type\":\"charge.check\", \"data\": \"...\"}";
  
 // Event オブジェクトを生成
-Event ev = Webhook.constructEvent(payload, sigHeader, Rlite.getWebhookSignature());
+Event ev = Webhook.constructEvent(payload, sigHeader, RpayLite.getWebhookSignature());
 //OR
 Event ev = Webhook.constructEvent(payload, SigHeader);
 ```
